@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoWithParticleSystem_test1.MonoWithParticleSystem_test1.ParticleEffects;
+using ParticleSystem.ParticleSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
+namespace ParticleProgram.ParticleSystem
 {
     public enum EffectType { Singular, Loop, OneWay}
-    public class ParticleEffect
+    public class ParticleEffect : DTimeHolder
     {
         public Random random = new Random(100);
         public float totalDuration = 0;
@@ -81,7 +81,7 @@ namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
                 } 
             }
         }
-        public void Draw(SpriteBatch spritebatch)
+        public virtual void Draw(SpriteBatch spritebatch)
         {
             spritebatch.Begin();
             for (int i = 0; i < particles.Count; i++)
@@ -90,6 +90,10 @@ namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
             }
             spritebatch.End();
         }
+        List<Particle> particleToDelete = new List<Particle>();
+
+        public double getDT { get => totalDuration/desiredDuration; set => totalDuration = (float)value *desiredDuration; }
+
         public virtual void StartEffect(Type partType, int particlesCount = -1, float duration = -1, bool load = true, Vector2? position = null,
             float scale = -1, EffectType? effectType = null, Color? mainColor = null)
         {
@@ -103,7 +107,7 @@ namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
             if (position.HasValue)
                 this.position = position.Value;
             if (effectType.HasValue)
-                this.effectType = effectType.Value;
+                this.effectType = effectType.Value; 
             if (mainColor.HasValue)
                 this.mainColor = mainColor.Value;
 
@@ -123,9 +127,14 @@ namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
             {
                 //particles.Add(new TestParticle(position, random.NextDouble(), this));
                 particles.Add((Particle)Activator.CreateInstance(partType, new object[] { this.position, random.NextDouble(), random, this }));
+                if (effectType.HasValue)
+                {
+                    if (this.effectType == EffectType.OneWay)
+                    {
+                        particleToDelete.Add(particles.Last());
+                    }
+                }
             }
-        }
-        public virtual void GenerateParticles() {
-        }
+        } 
     }
 }

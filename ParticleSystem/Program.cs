@@ -1,3 +1,3 @@
 ﻿
-using var game = new MonoWithParticleSystem_test1.Game1();
+using var game = new ParticleProgram.Game1();
 game.Run();

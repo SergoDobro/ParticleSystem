@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoWithParticleSystem_test1.MonoWithParticleSystem_test1;
+using ParticleProgram.ParticleSystem;
+using ParticleProgram.ParticleSystem.ParticleGroups;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using PartSys = MonoWithParticleSystem_test1.MonoWithParticleSystem_test1.ParticleManager;
+using System.Threading; 
 
-namespace MonoWithParticleSystem_test1
+namespace ParticleProgram
 {
     public class Game1 : Game
     {
@@ -21,10 +21,10 @@ namespace MonoWithParticleSystem_test1
              
 
         }
-        PartSys particleSystem;
+        ParticleProgram.ParticleSystem.ParticleManager particleManager;
         protected override void Initialize()
         {
-            particleSystem = new PartSys();
+            particleManager = new ParticleProgram.ParticleSystem.ParticleManager();
             base.Initialize();
 
 
@@ -36,22 +36,23 @@ namespace MonoWithParticleSystem_test1
 
         }
         ParticleEffect ps;
-        ParticleEffect_Directed ps2;
+        ParticleEffect_Groups ps2;
         float t = 0.7f;
+        Random random = new Random();
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             GlobalHolder.GraphicsDevice = GraphicsDevice;
-            particleSystem.LoadContent();
+            particleManager.LoadContent();
             
             ps = (new ParticleEffect(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2)));
-            particleSystem.CreateEffect(ps);
+            particleManager.CreateEffect(ps);
 
-            ps2 = (new ParticleEffect_Directed(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2)));
-            particleSystem.CreateEffect(ps2);
+            ps2 = (new ParticleEffect_Groups(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2)));
+            particleManager.CreateEffect(ps2);
 
-            ps.StartEffect(typeof(MonoWithParticleSystem_test1.ParticleEffects.Splash_Fire), duration: 0.7f, particlesCount: 30, effectType: EffectType.OneWay,
+            ps.StartEffect(typeof(ParticleSystem.ParticleEffects.Splash_Fire), duration: 0.7f, particlesCount: 30, effectType: EffectType.OneWay,
                 mainColor: Color.Red, scale:100);
             //new System.Threading.Thread(() =>
             //{
@@ -69,33 +70,42 @@ namespace MonoWithParticleSystem_test1
         protected override void UnloadContent()
         {
         }
-
         MouseState mouseState, prevmouseState;
-        Vector2? positionFrom = new Vector2(0, 0); 
+        Vector2? positionFrom = null; 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             mouseState = Mouse.GetState();
-            particleSystem.Update(gameTime);
+            particleManager.Update(gameTime);
 
             if (mouseState.LeftButton == ButtonState.Pressed && prevmouseState.LeftButton == ButtonState.Released)
             {
-                ps.StartEffect(typeof(MonoWithParticleSystem_test1.ParticleEffects.Splash_Particle), duration: t, particlesCount: 200,
-                    position: mouseState.Position.ToVector2(), mainColor: Color.Green);
+                //if (random.NextDouble()>0.5)
+                //{
+                //    ps.StartEffect(typeof(ParticleSystem.ParticleEffects.Splash_Particle), duration: t, particlesCount: 200,
+                //        position: mouseState.Position.ToVector2(), mainColor: Color.Green);
+                //}
+                //else
+                //{ 
+                //    ps.StartEffect(typeof(ParticleSystem.ParticleEffects.Splash_Particle_Elastic), duration: t, particlesCount: 200,
+                //        position: mouseState.Position.ToVector2(), mainColor: Color.Green);
+                //}
+                ps2.AddParticleGroup(new ParticleGroup_Circle_Circling_Double(new object[] { mouseState.Position.ToVector2(), 15, false, 0.001, 3, 0.3, 60 }) );
                 if (positionFrom == null)
                 {
                     positionFrom = mouseState.Position.ToVector2();
                 }
                 else
                 {
-                    ps2.StartEffect(typeof(MonoWithParticleSystem_test1.ParticleEffects.Particle_Directed_Simple), startPosition: positionFrom, endPosition: mouseState.Position.ToVector2());
+                   // ps2.AddParticleGroup(new ParticleGroup_Circle_Circling_Double(new object[]{ positionFrom.Value, 10, false, 0.01 }) { groupLifeDesiredDuration = 3, circlingSpeed = 0.5, circleScale = 30});
+                    //ps2.StartEffect(typeof(ParticleSystem.ParticleEffects.Particle_Directed_Generating), startPosition: positionFrom, endPosition: mouseState.Position.ToVector2());
                     positionFrom = null;
                 }
             }
             if (mouseState.RightButton == ButtonState.Pressed && prevmouseState.RightButton == ButtonState.Released)
             {
-                ps.StartEffect(typeof(MonoWithParticleSystem_test1.ParticleEffects.Particle_Splash_Out), duration: t, particlesCount: 1000,
+                ps.StartEffect(typeof(ParticleSystem.ParticleEffects.Particle_Splash_Out), duration: t, particlesCount: 1000,
                     position: mouseState.Position.ToVector2(), mainColor: Color.LightGreen);
             }
             prevmouseState = mouseState;
@@ -107,7 +117,7 @@ namespace MonoWithParticleSystem_test1
         {
             GraphicsDevice.Clear(Color.DarkSlateGray);
 
-            particleSystem.Draw(spriteBatch);
+            particleManager.Draw(spriteBatch);
 
             base.Draw(gameTime);
         }

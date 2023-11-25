@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1.ParticleEffects
+namespace ParticleProgram.ParticleSystem.ParticleEffects
 {
     public class TestParticle : Particle
     {

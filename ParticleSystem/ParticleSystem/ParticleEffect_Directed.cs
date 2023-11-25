@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoWithParticleSystem_test1.MonoWithParticleSystem_test1.ParticleEffects;
+using Microsoft.Xna.Framework.Graphics; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
+namespace ParticleProgram.ParticleSystem
 { 
     public enum ParticleAdditionType { AddEach, ReAddAll }
     public class ParticleEffect_Directed : ParticleEffect
     {
-        ParticleAdditionType particleEditionTime = ParticleAdditionType.AddEach;
+        ParticleAdditionType particleAdditionType = ParticleAdditionType.AddEach;
         public ParticleEffect_Directed(Vector2 position) : base(position)
         {
         }
@@ -25,22 +24,6 @@ namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
             {
                 particles[i].Update(gameTime);
             }
-            //if (totalDuration >= desiredDuration)
-            //{
-            //    switch (effectType)
-            //    {
-            //        case EffectType.Singular:
-            //            isActive = false;
-            //            break;
-            //        case EffectType.Loop:
-            //            totalDuration = 0;
-            //            break;
-            //        case EffectType.OneWay:
-            //            break;
-            //        default:
-            //            break;
-            //    }
-            //}
         }
         public void StartEffect(Type partType, int particlesCount = -1, float duration = -1, bool load = true, Vector2? startPosition = null,
             float scale = -1, EffectType? effectType = null, Color? mainColor = null, Vector2? endPosition = null)
@@ -69,7 +52,7 @@ namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
             isActive = true;
             totalDuration = 0;
              
-            switch (particleEditionTime)
+            switch (particleAdditionType)
             {
                 case ParticleAdditionType.AddEach:
                     particles.Add((Particle_Directed)Activator.CreateInstance(partType, new object[] { startPosition, endPosition, random.NextDouble(), random, this }));

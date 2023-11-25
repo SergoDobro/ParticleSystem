@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using MonoWithParticleSystem_test1.MonoWithParticleSystem_test1;
-using MonoWithParticleSystem_test1.MonoWithParticleSystem_test1.ParticleEffects;
+﻿using Microsoft.Xna.Framework; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +6,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1.ParticleEffects
+namespace ParticleProgram.ParticleSystem.ParticleEffects
 {
     public class Particle_Splash_Out : Splash_Particle
     {

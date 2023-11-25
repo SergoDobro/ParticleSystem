@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonoWithParticleSystem_test1.MonoWithParticleSystem_test1
+namespace ParticleProgram.ParticleSystem
 {
     internal class ParticleManager
     {
